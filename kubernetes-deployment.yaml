@@ -1,0 +1,47 @@
+# คอนฟิกสำหรับการติดตั้งบอท Discord webhook บน Kubernetes
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-webhook-bot
+  labels:
+    app: discord-webhook-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discord-webhook-bot
+  template:
+    metadata:
+      labels:
+        app: discord-webhook-bot
+    spec:
+      containers:
+      - name: discord-webhook-bot
+        image: discord-webhook-bot:latest
+        imagePullPolicy: IfNotPresent
+        # ถ้าคุณใช้รีจิสทรีส่วนตัว
+        # imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "0.2"
+            memory: "256Mi"
+          requests:
+            cpu: "0.1"
+            memory: "128Mi"        env:
+        - name: DISCORD_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: discord-webhook-bot-secrets
+              key: discord-token
+        - name: WEBHOOK_URL
+          value: "https://n8n.chawakorndev.online/webhook-test/34a6a11f-da6f-41aa-b62d-f02e1b08e033"
+        - name: NODE_ENV
+          value: "production"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: discord-webhook-bot-secrets
+type: Opaque
+data:
+  discord-token: ใส่โทเค็นที่เข้ารหัส_BASE64_ของคุณที่นี่

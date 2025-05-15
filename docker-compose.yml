@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  discord-bot:
+    build: .
+    container_name: discord-webhook-bot
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - WEBHOOK_URL=${WEBHOOK_URL:-https://n8n.chawakorndev.online/webhook-test/34a6a11f-da6f-41aa-b62d-f02e1b08e033}
+    volumes:
+      - ./logs:/app/logs
+    # ตรวจสอบสถานะเพื่อยืนยันว่าบอทยังคงทำงานอยู่
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(process.env.DISCORD_TOKEN ? 0 : 1)"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 20s
