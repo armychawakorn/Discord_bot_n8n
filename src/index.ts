@@ -26,6 +26,7 @@ client.on(Events.MessageCreate, async (message: Message) => {
     // ไม่สนใจข้อความจากบอท เพื่อป้องกันการวนซ้ำ
     if (message.author.bot) return;
       // เตรียมข้อมูลสำหรับส่งไปยัง webhook
+    
     const webhookData = {
       content: message.content,
       author: {
@@ -34,6 +35,7 @@ client.on(Events.MessageCreate, async (message: Message) => {
         discriminator: message.author.discriminator,
         avatar: message.author.avatarURL(),
       },
+      channelType: message.channel.type,
       channelId: message.channelId,
       guildId: message.guildId,
       messageId: message.id,
